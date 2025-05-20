@@ -14,7 +14,7 @@ export const timelineEvents: TimelineEvent[] = [
     id: '1',
     year: '~200 BCE',
     title: 'Origin of Bharatanatyam',
-    description: 'One of India's oldest classical dance forms, Bharatanatyam originated in Tamil Nadu temples. Its foundations were codified in Natya Shastra by Sage Bharata.',
+    description: 'One of India\'s oldest classical dance forms, Bharatanatyam originated in Tamil Nadu temples. Its foundations were codified in Natya Shastra by Sage Bharata.',
     artForm: 'Bharatanatyam',
     category: 'Origin',
     impactScore: 9
@@ -32,7 +32,7 @@ export const timelineEvents: TimelineEvent[] = [
     id: '3',
     year: '1930s',
     title: 'Kalamkari Revival',
-    description: 'The traditional art of Kalamkari (pen craft) saw a revival during India's swadeshi movement when local artisans were encouraged to revive indigenous crafts.',
+    description: 'The traditional art of Kalamkari (pen craft) saw a revival during India\'s swadeshi movement when local artisans were encouraged to revive indigenous crafts.',
     artForm: 'Kalamkari',
     category: 'Revival',
     impactScore: 7
@@ -41,7 +41,7 @@ export const timelineEvents: TimelineEvent[] = [
     id: '4',
     year: '1950',
     title: 'Formation of Sangeet Natak Akademi',
-    description: 'India's national academy for music, dance, and drama was established, providing institutional support to classical art forms.',
+    description: 'India\'s national academy for music, dance, and drama was established, providing institutional support to classical art forms.',
     artForm: 'Multiple Classical Arts',
     category: 'Funding',
     impactScore: 8
