@@ -31,8 +31,8 @@ const ArtExplorer = () => {
   const selectedId = queryParams.get("id");
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRegion, setSelectedRegion] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedRegion, setSelectedRegion] = useState<string>("all_regions");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all_categories");
   const [selectedArt, setSelectedArt] = useState<ArtForm | null>(null);
   const [filteredArts, setFilteredArts] = useState<ArtForm[]>(artForms);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -63,12 +63,12 @@ const ArtExplorer = () => {
     }
 
     // Filter by region
-    if (selectedRegion) {
+    if (selectedRegion && selectedRegion !== "all_regions") {
       result = result.filter((art) => art.region === selectedRegion);
     }
 
     // Filter by category
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "all_categories") {
       result = result.filter((art) => art.category === selectedCategory);
     }
 
@@ -88,8 +88,8 @@ const ArtExplorer = () => {
 
   const handleClearFilters = () => {
     setSearchQuery("");
-    setSelectedRegion("");
-    setSelectedCategory("");
+    setSelectedRegion("all_regions");
+    setSelectedCategory("all_categories");
   };
 
   const toggleFilters = () => {
@@ -160,7 +160,7 @@ const ArtExplorer = () => {
                   <SelectValue placeholder="All Regions" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Regions</SelectItem>
+                  <SelectItem value="all_regions">All Regions</SelectItem>
                   {regions.map((region) => (
                     <SelectItem key={region} value={region}>
                       {region}
@@ -181,7 +181,7 @@ const ArtExplorer = () => {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all_categories">All Categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
@@ -196,7 +196,7 @@ const ArtExplorer = () => {
               variant="ghost"
               className="w-full mt-2"
               onClick={handleClearFilters}
-              disabled={!searchQuery && !selectedRegion && !selectedCategory}
+              disabled={!searchQuery && selectedRegion === "all_regions" && selectedCategory === "all_categories"}
             >
               Clear All Filters
             </Button>
