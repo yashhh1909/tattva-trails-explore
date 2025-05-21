@@ -3,20 +3,20 @@ import PageLayout from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { artTimeline } from "@/data/artTimeline";
+import { timelineEvents } from "@/data/artTimeline";
 import { ChevronDown, ChevronUp, Calendar, Clock, Info } from "lucide-react";
 
 const Timeline = () => {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
-  const [era, setEra] = useState<string>("all");
+  const [category, setCategory] = useState<string>("all");
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const timelineRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Filter timeline items based on selected era
-  const filteredTimeline = era === "all" 
-    ? artTimeline 
-    : artTimeline.filter(item => item.era === era);
+  // Filter timeline items based on selected category
+  const filteredTimeline = category === "all" 
+    ? timelineEvents 
+    : timelineEvents.filter(item => item.category === category);
 
   // Handle toggle expansion of timeline items
   const toggleExpand = (id: string) => {
@@ -41,12 +41,14 @@ const Timeline = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       // Highlight first item on load
-      setActiveIndex(0);
-      setExpandedIds([filteredTimeline[0].id]);
+      if (filteredTimeline.length > 0) {
+        setActiveIndex(0);
+        setExpandedIds([filteredTimeline[0].id]);
+      }
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [filteredTimeline]);
 
   // Navigate through timeline
   const navigateTimeline = (direction: 'prev' | 'next') => {
@@ -55,13 +57,15 @@ const Timeline = () => {
       : Math.max(activeIndex - 1, 0);
     
     setActiveIndex(newIndex);
-    setExpandedIds([filteredTimeline[newIndex].id]);
+    if (filteredTimeline[newIndex]) {
+      setExpandedIds([filteredTimeline[newIndex].id]);
+    }
   };
 
   // Format years for display
   const formatYear = (year: string) => {
-    // If year contains BC, format it
-    if (year.includes("BC")) {
+    // If year contains BCE, format it
+    if (year.includes("BCE")) {
       return year;
     }
     
@@ -69,8 +73,8 @@ const Timeline = () => {
     return `${year} CE`;
   };
 
-  // Get eras for filter
-  const eras = ["all", ...new Set(artTimeline.map(item => item.era))];
+  // Get categories for filter
+  const categories = ["all", ...Array.from(new Set(timelineEvents.map(item => item.category)))];
 
   return (
     <PageLayout>
@@ -81,22 +85,22 @@ const Timeline = () => {
         </p>
       </div>
 
-      {/* Era filters and navigation */}
+      {/* Category filters and navigation */}
       <div className="mb-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap gap-2">
-            {eras.map((e) => (
+            {categories.map((cat) => (
               <Badge 
-                key={e} 
-                variant={era === e ? "default" : "outline"}
-                className={`cursor-pointer ${era === e ? 'bg-tattva-primary' : 'hover:bg-muted'}`}
+                key={cat} 
+                variant={category === cat ? "default" : "outline"}
+                className={`cursor-pointer ${category === cat ? 'bg-tattva-primary' : 'hover:bg-muted'}`}
                 onClick={() => {
-                  setEra(e);
+                  setCategory(cat);
                   setActiveIndex(0);
                   setExpandedIds([]);
                 }}
               >
-                {e === "all" ? "All Eras" : e}
+                {cat === "all" ? "All Categories" : cat}
               </Badge>
             ))}
           </div>
@@ -159,7 +163,7 @@ const Timeline = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <Badge className="mb-2 bg-tattva-primary/20 text-tattva-primary hover:bg-tattva-primary/30 font-normal">
-                        {item.era}
+                        {item.category}
                       </Badge>
                       <CardTitle className="text-xl font-rajdhani flex items-center">
                         {item.title}
@@ -170,16 +174,10 @@ const Timeline = () => {
                         <Calendar className="h-3 w-3 mr-1" /> 
                         <span>{formatYear(item.year)}</span>
                       </div>
-                      {item.duration && (
-                        <div className="flex items-center text-xs text-muted-foreground mt-1">
-                          <Clock className="h-3 w-3 mr-1" /> 
-                          <span>Duration: {item.duration}</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                   <CardDescription className="text-sm line-clamp-2">
-                    {item.summary}
+                    {item.description}
                   </CardDescription>
                 </CardHeader>
                 
@@ -187,63 +185,24 @@ const Timeline = () => {
                   {/* Preview content always visible */}
                   <div className="space-y-2 mb-2">
                     <div className="flex flex-wrap gap-2 mb-2">
-                      {item.tags.map((tag, i) => (
-                        <Badge key={i} variant="outline" className="bg-accent/10">
-                          {tag}
-                        </Badge>
-                      ))}
+                      <Badge variant="outline" className="bg-accent/10">
+                        {item.artForm}
+                      </Badge>
+                      <Badge variant="outline" className="bg-accent/10">
+                        Impact: {item.impactScore}/10
+                      </Badge>
                     </div>
-                    
-                    {item.imageUrl && (
-                      <div 
-                        className="w-full h-48 bg-cover bg-center rounded-md mb-4 transform transition-transform hover:scale-[1.01]"
-                        style={{ backgroundImage: `url(${item.imageUrl})` }}
-                      />
-                    )}
                   </div>
                   
                   {/* Expandable content */}
                   {expandedIds.includes(item.id) && (
                     <div className="mt-4 space-y-4 animate-enter">
-                      {item.significance && (
-                        <div className="p-3 bg-tattva-primary/10 rounded-md">
-                          <h4 className="text-sm font-semibold mb-1 flex items-center">
-                            <Info className="h-3 w-3 mr-1" /> Cultural Significance
-                          </h4>
-                          <p className="text-sm text-muted-foreground">{item.significance}</p>
-                        </div>
-                      )}
-                      
-                      {item.details && (
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">Historical Details</h4>
-                          <p className="text-sm text-muted-foreground">{item.details}</p>
-                        </div>
-                      )}
-                      
-                      {item.influences && (
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">Influences & Legacy</h4>
-                          <ul className="list-disc list-inside text-sm text-muted-foreground">
-                            {item.influences.map((influence, i) => (
-                              <li key={i}>{influence}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      
-                      {item.relatedArtForms && (
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">Related Art Forms</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {item.relatedArtForms.map((art, i) => (
-                              <Badge key={i} variant="outline" className="bg-muted/50">
-                                {art}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      <div className="p-3 bg-tattva-primary/10 rounded-md">
+                        <h4 className="text-sm font-semibold mb-1 flex items-center">
+                          <Info className="h-3 w-3 mr-1" /> Cultural Significance
+                        </h4>
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                      </div>
                     </div>
                   )}
                   
@@ -268,7 +227,7 @@ const Timeline = () => {
       </div>
 
       {/* Navigation controls */}
-      <div className="fixed bottom-8 right-8 flex flex-col gap-2">
+      <div className="fixed bottom-8 right-8 flex flex-col gap-2 z-10">
         <Button 
           className="rounded-full bg-tattva-primary shadow-lg hover:bg-tattva-primary/90"
           size="icon"
@@ -288,7 +247,7 @@ const Timeline = () => {
       </div>
 
       {/* Progress indicator */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-card/80 border border-border rounded-full px-3 py-1 text-sm backdrop-blur-sm">
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-card/80 border border-border rounded-full px-3 py-1 text-sm backdrop-blur-sm z-10">
         {activeIndex + 1} of {filteredTimeline.length}
       </div>
     </PageLayout>
