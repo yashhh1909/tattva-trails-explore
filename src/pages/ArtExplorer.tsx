@@ -194,11 +194,15 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
       </CardContent>
       <CardFooter className="bg-muted/20 py-2">
         <div className="flex flex-wrap gap-1 w-full">
-          {art.keywords && art.keywords.map((tag, i) => (
-            <Badge key={i} variant="outline" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
+          {art.keywords && art.keywords.length > 0 ? (
+            art.keywords.map((tag, i) => (
+              <Badge key={i} variant="outline" className="text-xs">
+                {tag}
+              </Badge>
+            ))
+          ) : (
+            <span className="text-xs text-muted-foreground">No keywords available</span>
+          )}
         </div>
       </CardFooter>
     </Card>

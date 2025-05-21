@@ -10,6 +10,7 @@ export interface ArtForm {
   popularity: number; // 1-10 scale
   giTagged: boolean;
   origin: string;
+  keywords?: string[]; // Adding optional keywords property
 }
 
 export const artForms: ArtForm[] = [
@@ -23,7 +24,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 8,
     giTagged: true,
-    origin: '12th century CE'
+    origin: '12th century CE',
+    keywords: ['Geometric', 'Mythological', 'Traditional']
   },
   {
     id: '2',
@@ -35,7 +37,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 9,
     giTagged: false,
-    origin: 'c. 200 BCE'
+    origin: 'c. 200 BCE',
+    keywords: ['Classical', 'Expressive', 'Ancient']
   },
   {
     id: '3',
@@ -47,7 +50,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 8,
     giTagged: true,
-    origin: '15th century CE'
+    origin: '15th century CE',
+    keywords: ['Wool', 'Cashmere', 'Luxury']
   },
   {
     id: '4',
@@ -59,7 +63,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 6,
     giTagged: true,
-    origin: 'c. 4000 BCE'
+    origin: 'c. 4000 BCE',
+    keywords: ['Metalwork', 'Tribal', 'Casting']
   },
   {
     id: '5',
@@ -71,7 +76,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 7,
     giTagged: false,
-    origin: '15th century CE'
+    origin: '15th century CE',
+    keywords: ['Melody', 'Rhythmic', 'Classical']
   },
   {
     id: '6',
@@ -83,7 +89,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 7,
     giTagged: true,
-    origin: '15th century CE'
+    origin: '15th century CE',
+    keywords: ['Embroidery', 'Colorful', 'Heritage']
   },
   {
     id: '7',
@@ -95,7 +102,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 8,
     giTagged: false,
-    origin: '17th century CE'
+    origin: '17th century CE',
+    keywords: ['Dramatic', 'Costume', 'Storytelling']
   },
   {
     id: '8',
@@ -107,7 +115,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 9,
     giTagged: true,
-    origin: '14th century CE'
+    origin: '14th century CE',
+    keywords: ['Silk', 'Brocade', 'Wedding']
   },
   {
     id: '9',
@@ -119,7 +128,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 6,
     giTagged: true,
-    origin: 'Ancient'
+    origin: 'Ancient',
+    keywords: ['Tribal', 'Nature', 'Colorful']
   },
   {
     id: '10',
@@ -131,7 +141,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 8,
     giTagged: false,
-    origin: '2nd century BCE'
+    origin: '2nd century BCE',
+    keywords: ['Fluid', 'Sculptural', 'Classical']
   },
   {
     id: '11',
@@ -143,7 +154,8 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 7,
     giTagged: true,
-    origin: '12th century CE'
+    origin: '12th century CE',
+    keywords: ['Scroll', 'Religious', 'Intricate']
   },
   {
     id: '12',
@@ -155,6 +167,7 @@ export const artForms: ArtForm[] = [
     image: '/public/placeholder.svg',
     popularity: 7,
     giTagged: false,
-    origin: '17th century CE'
+    origin: '17th century CE',
+    keywords: ['Rhythmic', 'Storytelling', 'Dramatic']
   }
 ];
