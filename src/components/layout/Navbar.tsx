@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogIn, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -18,9 +18,15 @@ const navItems = [
 const Navbar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogin = () => {
+    // This is a placeholder - we'll implement real authentication once connected to Supabase
+    setIsLoggedIn(!isLoggedIn);
   };
 
   return (
@@ -52,10 +58,42 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Login Button */}
+            <Button 
+              variant="ghost" 
+              onClick={handleLogin}
+              className="flex items-center gap-2"
+            >
+              {isLoggedIn ? (
+                <>
+                  <UserRound className="h-4 w-4" /> 
+                  <span>Profile</span>
+                </>
+              ) : (
+                <>
+                  <LogIn className="h-4 w-4" /> 
+                  <span>Login</span>
+                </>
+              )}
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogin}
+              className="mr-2"
+            >
+              {isLoggedIn ? (
+                <UserRound className="h-5 w-5 text-tattva-dark dark:text-tattva-light" />
+              ) : (
+                <LogIn className="h-5 w-5 text-tattva-dark dark:text-tattva-light" />
+              )}
+            </Button>
+            
             <Button
               variant="ghost"
               size="icon"

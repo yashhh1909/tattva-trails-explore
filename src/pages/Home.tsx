@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Palette, BookOpen, Users, Compass } from "lucide-react";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { artForms } from "@/data/artForms";
 import { culturalHotspots } from "@/data/culturalHotspots";
 import { Card, CardContent } from "@/components/ui/card";
+import IndiaMap from "@/components/map/IndiaMap";
 
 const Home = () => {
   const [activeState, setActiveState] = useState("");
@@ -63,8 +63,27 @@ const Home = () => {
         )}
       </section>
 
-      {/* Features Section */}
+      {/* Map of India Section */}
       <section className="py-16 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8 font-rajdhani">Explore India's Cultural Map</h2>
+          <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            Discover the rich cultural heritage across India's diverse regions. Click on markers to learn about traditional art forms and cultural hotspots.
+          </p>
+          <IndiaMap />
+          <div className="mt-6 text-center">
+            <Link to="/cultural-map">
+              <Button variant="outline" className="border-tattva-primary text-tattva-primary hover:bg-tattva-primary hover:text-white">
+                Explore Detailed Cultural Map
+                <MapPin className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 bg-tattva-light dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 font-rajdhani">Explore India's Cultural Heritage</h2>
           
@@ -210,16 +229,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* KalaBot Teaser */}
+      {/* Enhanced KalaBot Teaser */}
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-8 md:mb-0">
               <h2 className="text-3xl font-bold mb-4 font-rajdhani">Meet KalaBot</h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                Your AI guide to India's cultural heritage. Ask questions, get personalized recommendations, and dive deeper into the stories behind traditional art forms.
+                Your AI guide to India's cultural heritage. Ask questions, get personalized recommendations, 
+                and dive deeper into the stories behind traditional art forms. Now enhanced with voice capabilities and regional expertise!
               </p>
-              <Link to="/kalabot">
+              <div className="space-y-2">
+                <p className="flex items-center"><span className="w-6 h-6 rounded-full bg-tattva-primary mr-2 flex items-center justify-center text-white">✓</span> Get personalized travel itineraries</p>
+                <p className="flex items-center"><span className="w-6 h-6 rounded-full bg-tattva-primary mr-2 flex items-center justify-center text-white">✓</span> Learn about local customs and traditions</p>
+                <p className="flex items-center"><span className="w-6 h-6 rounded-full bg-tattva-primary mr-2 flex items-center justify-center text-white">✓</span> Discover hidden cultural gems</p>
+              </div>
+              <Link to="/kalabot" className="mt-6 inline-block">
                 <Button className="bg-tattva-secondary text-tattva-dark hover:bg-tattva-secondary/90">
                   Chat with KalaBot
                   <BookOpen className="ml-2 h-5 w-5" />
@@ -233,6 +258,13 @@ const Home = () => {
                 <div className="absolute inset-16 rounded-full bg-gradient-to-r from-tattva-primary/60 to-tattva-accent/60 animate-pulse" style={{ animationDelay: '1s' }}></div>
                 <div className="absolute inset-24 rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent flex items-center justify-center text-white font-bold text-xl">
                   K
+                </div>
+                {/* Speech bubbles for enhanced visual */}
+                <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-xl px-3 py-2 shadow-md text-sm">
+                  Ask me about art forms!
+                </div>
+                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-xl px-3 py-2 shadow-md text-sm">
+                  I know 100+ traditions!
                 </div>
               </div>
             </div>
