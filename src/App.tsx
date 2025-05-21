@@ -11,7 +11,6 @@ import ArtExplorer from "./pages/ArtExplorer";
 import Trends from "./pages/Trends";
 import KalaBot from "./pages/KalaBot";
 import Timeline from "./pages/Timeline";
-import SupportLocal from "./pages/SupportLocal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +28,6 @@ const App = () => (
             <Route path="/trends" element={<Trends />} />
             <Route path="/kalabot" element={<KalaBot />} />
             <Route path="/timeline" element={<Timeline />} />
-            <Route path="/support-local" element={<SupportLocal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

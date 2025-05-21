@@ -167,7 +167,7 @@
   @apply absolute left-1/2 -translate-x-1/2 w-1 h-full bg-tattva-accent/30 top-0 z-0;
 }
 
-/* KalaBot chat style */
+/* AhamAI chat style (renamed from KalaBot) */
 .chat-message-user {
   @apply bg-tattva-primary text-white rounded-tr-2xl rounded-bl-2xl rounded-br-2xl p-4 max-w-[80%] ml-auto;
 }
@@ -220,4 +220,86 @@
 
 .recharts-legend-item-text {
   @apply text-foreground/90 !important;
+}
+
+/* New 3D effect styles */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.card-3d-inner {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-3d:hover .card-3d-inner {
+  transform: rotateY(5deg) rotateX(5deg);
+}
+
+/* Grid pattern background for cards */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Enhanced enter animation */
+.animate-enter {
+  animation: enter 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Typing indicator animation */
+.typing-animation {
+  @apply flex items-center justify-center;
+}
+
+/* Chat bubble animations */
+@keyframes message-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message-user, 
+.chat-message-bot {
+  animation: message-fade-in 0.3s ease-out forwards;
+}
+
+/* Growth animation for bars */
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-grow {
+  animation: grow 1.5s ease-out forwards;
+}
+
+/* 3D hover effect for cards */
+.hover-3d {
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.hover-3d:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale3d(1.05, 1.05, 1.05);
 }

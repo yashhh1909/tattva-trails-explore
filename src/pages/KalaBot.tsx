@@ -1,342 +1,323 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Mic, MicOff, Volume2, VolumeX, User, Bot, PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/layout/PageLayout";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Send, Mic, Bot, CircleStop } from "lucide-react";
+import { artForms } from "@/data/artForms";
 
-// Sample responses for the demo
-const botResponses = [
+// Sample responses for the AhamAI chatbot
+const sampleResponses = [
   {
-    prompt: "tell me about kathakali",
-    response: "Kathakali is a classical dance form from Kerala in South India. It's known for its elaborate costumes, vibrant makeup, and expressive storytelling through hand gestures (mudras) and facial expressions (abhinaya). Kathakali performances typically depict stories from Hindu epics like the Mahabharata and Ramayana. The training is rigorous, often beginning at a young age, and dancers develop exceptional control over their facial muscles to convey a range of emotions. Traditional performances were often held through the night in temple courtyards, though modern shows are usually shorter. Would you like to know more about Kathakali's makeup, training, or famous performers?"
+    keywords: ["hello", "hi", "greetings", "hey"],
+    response: "Namaste! I am AhamAI, your guide to India's cultural heritage. How may I assist you today?",
   },
   {
-    prompt: "popular destinations in rajasthan",
-    response: "Rajasthan offers some of India's most iconic cultural destinations! Jaipur, the 'Pink City,' features the stunning Amber Fort and City Palace. Udaipur, the 'City of Lakes,' is known for its romantic setting with the Lake Palace. Jodhpur's blue-painted old city is dominated by the imposing Mehrangarh Fort. Jaisalmer's golden sandstone fortress rises from the Thar Desert like a mirage. Don't miss Pushkar's sacred lake and temples, Bikaner's unusual Rat Temple, and Mount Abu's exquisite Dilwara Jain Temples. For wildlife enthusiasts, Ranthambore National Park offers tiger safaris. Each city showcases Rajasthan's rich heritage of palaces, handicrafts, and vibrant cultural traditions. Would you like recommendations for a specific city or advice on planning a Rajasthan itinerary?"
+    keywords: ["who", "what", "you", "aham"],
+    response: "I am AhamAI, an artificial intelligence designed to help you explore India's rich cultural tapestry. 'Aham' means 'I' or 'self' in Sanskrit, representing the deep connection between identity and cultural heritage.",
   },
   {
-    prompt: "what is the best time to visit india",
-    response: "The best time to visit India depends on the regions you plan to explore, as the climate varies significantly across this vast country. Generally, October to March is considered the ideal period for most of India, offering pleasant temperatures and minimal rainfall. For Northern India (Delhi, Agra, Rajasthan), October to March provides cool, dry weather perfect for sightseeing. Southern India (Kerala, Tamil Nadu) is best from November to February, avoiding the intense summer heat and monsoon season. The Himalayan regions (Ladakh, Himachal Pradesh) are most accessible from May to September when mountain passes are open. Beach destinations like Goa are most enjoyable from November to February. If you're interested in cultural festivals, plan around events like Diwali (October/November), Holi (March), or Pongal (January). Would you like specific recommendations based on particular regions or activities you're interested in?"
-  }
+    keywords: ["art", "form", "traditional"],
+    response: "India has over 100 traditional art forms across different regions. Would you like me to tell you about a specific art form or recommend one based on your interests?",
+  },
+  {
+    keywords: ["dance", "classical", "bharatanatyam", "kathak"],
+    response: "India has eight classical dance forms recognized by the Sangeet Natak Akademi: Bharatanatyam, Kathak, Kathakali, Mohiniyattam, Kuchipudi, Odissi, Manipuri, and Sattriya. Each has distinct techniques, costumes, and regional origins. Which one would you like to know more about?",
+  },
 ];
 
-// Suggested queries for the user
-const suggestedQueries = [
-  "Tell me about Kathakali dance",
-  "What are popular destinations in Rajasthan?",
-  "Best time to visit India",
-  "Tell me about Indian classical music",
-  "What are the major festivals of India?",
-  "Recommend traditional dishes from South India"
-];
+// Define types for chat messages
+interface ChatMessage {
+  text: string;
+  sender: "user" | "bot";
+  timestamp: Date;
+  isTyping?: boolean;
+}
 
 const KalaBot = () => {
-  const [messages, setMessages] = useState<Array<{type: string, content: string}>>([
-    {type: 'bot', content: 'Namaste! I\'m KalaBot, your guide to India\'s cultural treasures. Ask me about art forms, destinations, festivals, or traditions!'}
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      text: "Namaste! I am AhamAI, your cultural guide to India's rich heritage. How can I assist you today?",
+      sender: "bot",
+      timestamp: new Date(),
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isRecording, setIsRecording] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [loadingResponse, setLoadingResponse] = useState(false);
-  
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [suggestionVisible, setSuggestionVisible] = useState(true);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto scroll to bottom of chat
+  // Suggestions for users
+  const suggestions = [
+    "Tell me about Madhubani painting",
+    "What is the history of Kathakali?",
+    "Recommend cultural sites in Rajasthan",
+    "How is Pattachitra art created?",
+  ];
+
+  // Scroll to bottom of chat when new messages arrive
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input on component mount
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  const toggleRecording = () => {
-    if (isRecording) {
-      setIsRecording(false);
-      toast({
-        title: "Voice input stopped",
-        description: "Your voice input has been processed",
-      });
-    } else {
-      setIsRecording(true);
-      toast({
-        title: "Listening...",
-        description: "Speak now to ask your question",
-      });
-      // Simulate voice recognition after 3 seconds
-      setTimeout(() => {
-        const randomQuery = suggestedQueries[Math.floor(Math.random() * suggestedQueries.length)];
-        setInput(randomQuery);
-        setIsRecording(false);
-      }, 3000);
-    }
+  // Function to add a typing indicator
+  const showTypingIndicator = () => {
+    setIsBotTyping(true);
+    setMessages((prev) => [
+      ...prev,
+      { text: "...", sender: "bot", timestamp: new Date(), isTyping: true },
+    ]);
   };
 
-  const toggleSpeech = () => {
-    setIsSpeaking(!isSpeaking);
-    if (!isSpeaking) {
-      toast({
-        title: "Text-to-speech enabled",
-        description: "KalaBot responses will be read aloud",
-      });
-    } else {
-      toast({
-        title: "Text-to-speech disabled",
-        description: "KalaBot responses will be silent",
-      });
-    }
+  // Function to remove typing indicator
+  const removeTypingIndicator = () => {
+    setIsBotTyping(false);
+    setMessages((prev) => prev.filter((msg) => !msg.isTyping));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-    
-    const userMessage = input.trim();
-    setMessages([...messages, {type: 'user', content: userMessage}]);
-    setInput('');
-    setLoadingResponse(true);
-    
-    // Simulate API call
+  // Handle user message submission
+  const handleSendMessage = () => {
+    if (!inputValue.trim()) return;
+
+    // Add user message
+    const userMessage = {
+      text: inputValue,
+      sender: "user" as const,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+
+    // Add typing indicator
+    showTypingIndicator();
+
+    // Remove suggestion after user sends first message
+    setSuggestionVisible(false);
+
+    // Generate bot response after a delay to simulate thinking
     setTimeout(() => {
-      // Find a matching response or use a default one
-      const matchedResponse = botResponses.find(item => 
-        userMessage.toLowerCase().includes(item.prompt.toLowerCase())
-      );
-      
-      const botMessage = matchedResponse 
-        ? matchedResponse.response
-        : "I don't have specific information about that yet, but I'm constantly learning! This question might be answered in our Art Explorer or Timeline sections, or you could check back later as I update my knowledge base.";
-      
-      setMessages(prev => [...prev, {type: 'bot', content: botMessage}]);
-      setLoadingResponse(false);
-      
-      // Simulate text-to-speech if enabled
-      if (isSpeaking) {
-        toast({
-          title: "Speaking response",
-          description: "KalaBot is reading the answer aloud",
-        });
-      }
-    }, 1500);
+      const botResponse = generateResponse(inputValue);
+      removeTypingIndicator();
+      setMessages((prev) => [
+        ...prev,
+        { text: botResponse, sender: "bot", timestamp: new Date() },
+      ]);
+    }, Math.random() * 1000 + 1500); // Random delay between 1.5-2.5 seconds
   };
 
-  const handleSuggestedQuery = (query: string) => {
-    setInput(query);
-    inputRef.current?.focus();
+  // Generate response based on user input
+  const generateResponse = (input: string) => {
+    const lowercaseInput = input.toLowerCase();
+    
+    // Check for art form specific questions
+    const matchedArtForm = artForms.find(
+      (art) => lowercaseInput.includes(art.name.toLowerCase())
+    );
+
+    if (matchedArtForm) {
+      return `${matchedArtForm.name} is a beautiful art form from ${matchedArtForm.state} in ${matchedArtForm.region} region. It falls under the category of ${matchedArtForm.category}. ${matchedArtForm.description}`;
+    }
+
+    // Check for keyword matches in sample responses
+    for (const sample of sampleResponses) {
+      for (const keyword of sample.keywords) {
+        if (lowercaseInput.includes(keyword)) {
+          return sample.response;
+        }
+      }
+    }
+
+    // Default response if no match found
+    return "That's an interesting question about Indian culture! While I'm still learning about the vast cultural tapestry of India, I'd be happy to explore this topic with you. Would you like me to search for specific information about art forms, festivals, or historical sites?";
+  };
+
+  // Handle voice recording toggle
+  const handleVoiceToggle = () => {
+    setIsRecording(!isRecording);
+    
+    if (!isRecording) {
+      // Simulate starting voice recording
+      setTimeout(() => {
+        setInputValue("Tell me about cultural festivals in India");
+      }, 1500);
+    } else {
+      // If we were recording and now stopping, send the message
+      if (inputValue.trim()) {
+        handleSendMessage();
+      }
+    }
+  };
+
+  // Handle suggestion click
+  const handleSuggestionClick = (suggestion: string) => {
+    setInputValue(suggestion);
+    // Wait a bit before sending the message for a more natural feel
+    setTimeout(() => {
+      handleSendMessage();
+    }, 300);
+  };
+
+  // Handle enter key press
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  // Add animation classes based on message sender
+  const getMessageClasses = (sender: string): string => {
+    if (sender === "user") {
+      return "chat-message-user animate-enter"; 
+    }
+    return "chat-message-bot animate-enter";
   };
 
   return (
     <PageLayout>
-      <div className="flex flex-col h-[calc(100vh-14rem)]">
-        <div className="mb-4">
-          <h1 className="text-3xl font-bold mb-2 font-rajdhani">KalaBot - Your Cultural Guide</h1>
-          <p className="text-muted-foreground">
-            Ask me anything about India's art, culture, destinations, and traditions
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
-          {/* Left sidebar with information tabs on desktop */}
-          <div className="hidden lg:block lg:col-span-1">
-            <Card className="h-full border border-border">
-              <Tabs defaultValue="about">
-                <TabsList className="w-full">
-                  <TabsTrigger value="about" className="w-1/3">About</TabsTrigger>
-                  <TabsTrigger value="help" className="w-1/3">Help</TabsTrigger>
-                  <TabsTrigger value="features" className="w-1/3">Features</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="about" className="px-4 py-4 space-y-2">
-                  <h3 className="font-bold font-rajdhani">What is KalaBot?</h3>
-                  <p className="text-sm text-muted-foreground">
-                    KalaBot is your AI guide to India's cultural heritage. It can answer questions about:
-                  </p>
-                  <ul className="text-sm space-y-1 list-disc pl-4">
-                    <li>Traditional art forms and handicrafts</li>
-                    <li>Music, dance, and theater traditions</li>
-                    <li>Cultural destinations and landmarks</li>
-                    <li>Festivals, cuisines, and local customs</li>
-                    <li>Historical context and significance</li>
-                  </ul>
-                </TabsContent>
-                
-                <TabsContent value="help" className="px-4 py-4">
-                  <h3 className="font-bold font-rajdhani">How to use KalaBot</h3>
-                  <ul className="text-sm space-y-2 mt-2">
-                    <li className="flex items-start gap-2">
-                      <Send className="h-4 w-4 mt-1 flex-shrink-0" />
-                      <span>Type your question and hit enter or click send</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Mic className="h-4 w-4 mt-1 flex-shrink-0" />
-                      <span>Click the microphone icon to use voice input</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Volume2 className="h-4 w-4 mt-1 flex-shrink-0" />
-                      <span>Toggle text-to-speech to hear responses</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <PlusCircle className="h-4 w-4 mt-1 flex-shrink-0" />
-                      <span>Click suggested queries below the chat for quick access</span>
-                    </li>
-                  </ul>
-                </TabsContent>
-                
-                <TabsContent value="features" className="px-4 py-4">
-                  <h3 className="font-bold font-rajdhani">KalaBot Features</h3>
-                  <div className="space-y-3 mt-2">
-                    <div className="text-sm border border-border p-2 rounded-md">
-                      <div className="font-medium">🗣️ Voice Interaction</div>
-                      <p className="text-muted-foreground text-xs">Ask questions using your voice and hear responses</p>
-                    </div>
-                    <div className="text-sm border border-border p-2 rounded-md">
-                      <div className="font-medium">🧠 Cultural Knowledge</div>
-                      <p className="text-muted-foreground text-xs">Detailed information about 100+ Indian art forms</p>
-                    </div>
-                    <div className="text-sm border border-border p-2 rounded-md">
-                      <div className="font-medium">🗺️ Travel Planning</div>
-                      <p className="text-muted-foreground text-xs">Get recommendations for cultural itineraries</p>
-                    </div>
-                    <div className="text-sm border border-border p-2 rounded-md">
-                      <div className="font-medium">📚 Continuous Learning</div>
-                      <p className="text-muted-foreground text-xs">KalaBot is constantly expanding its knowledge</p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2 font-rajdhani">AhamAI Cultural Assistant</h1>
+        <p className="text-muted-foreground">
+          Your intelligent guide to India's rich cultural heritage
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main chat area */}
+        <Card className="col-span-1 lg:col-span-2 border-border shadow-lg bg-card/50 backdrop-blur-sm">
+          <CardHeader className="border-b border-border">
+            <CardTitle className="flex items-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent flex items-center justify-center text-white mr-2">
+                <Bot size={18} />
+              </div>
+              <span>AhamAI Assistant</span>
+              <span className="ml-2 text-xs bg-green-500/20 text-green-500 px-2 py-0.5 rounded-full">
+                Online
+              </span>
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="p-0">
+            <ScrollArea className="h-[500px] w-full p-4">
+              <div className="space-y-4">
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`${
+                      message.sender === "user" ? "flex justify-end" : "flex justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`${getMessageClasses(message.sender)} ${
+                        message.isTyping ? "typing-animation" : ""
+                      }`}
+                    >
+                      {message.isTyping ? (
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
+                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                        </div>
+                      ) : (
+                        message.text
+                      )}
                     </div>
                   </div>
-                </TabsContent>
-              </Tabs>
-            </Card>
-          </div>
-          
-          {/* Chat area */}
-          <div className="lg:col-span-3 flex flex-col h-full">
-            <Card className="flex-grow overflow-hidden border border-border">
-              <CardContent className="p-0 h-full flex flex-col">
-                {/* Chat Messages */}
-                <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                  {messages.map((message, index) => (
-                    <div 
-                      key={index}
-                      className={`flex items-start gap-3 ${message.type === 'user' ? 'justify-end' : ''}`}
-                    >
-                      {message.type === 'bot' && (
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src="" />
-                          <AvatarFallback className="bg-accent text-white">
-                            <Bot className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      
-                      <div 
-                        className={`max-w-[80%] rounded-2xl p-3 ${
-                          message.type === 'user' 
-                            ? 'bg-tattva-primary text-white rounded-tr-none' 
-                            : 'bg-muted rounded-tl-none'
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      </div>
-                      
-                      {message.type === 'user' && (
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src="" />
-                          <AvatarFallback className="bg-primary text-white">
-                            <User className="h-4 w-4" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </div>
-                  ))}
-                  
-                  {loadingResponse && (
-                    <div className="flex items-start gap-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="" />
-                        <AvatarFallback className="bg-accent text-white">
-                          <Bot className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="max-w-[80%] bg-muted rounded-2xl rounded-tl-none p-4">
-                        <div className="flex space-x-2">
-                          <div className="w-2 h-2 rounded-full bg-accent/60 animate-bounce"></div>
-                          <div className="w-2 h-2 rounded-full bg-accent/60 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                          <div className="w-2 h-2 rounded-full bg-accent/60 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div ref={chatEndRef} />
-                </div>
-                
-                <Separator />
-                
-                {/* Suggested queries */}
-                <div className="px-4 py-2 flex flex-wrap gap-2 bg-muted/30">
-                  {suggestedQueries.slice(0, 3).map((query, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestedQuery(query)}
-                      className="text-xs px-3 py-1 bg-card hover:bg-primary/10 rounded-full border border-border transition-colors"
-                    >
-                      {query}
-                    </button>
-                  ))}
-                </div>
-                
-                {/* Input area */}
-                <div className="p-3 bg-card">
-                  <form onSubmit={handleSubmit} className="flex gap-2">
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={toggleSpeech}
-                      className="flex-shrink-0"
-                    >
-                      {isSpeaking ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
-                    </Button>
-                    
-                    <Input
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="Ask KalaBot about Indian culture..."
-                      ref={inputRef}
-                      className="flex-grow focus-visible:ring-tattva-accent"
-                    />
-                    
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={toggleRecording}
-                      className={`flex-shrink-0 ${isRecording ? 'text-red-500' : ''}`}
-                    >
-                      {isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-                    </Button>
-                    
-                    <Button 
-                      type="submit" 
-                      size="icon"
-                      variant="default"
-                      className="flex-shrink-0 bg-tattva-accent hover:bg-tattva-accent/90"
-                    >
-                      <Send className="h-5 w-5" />
-                    </Button>
-                  </form>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                ))}
+                <div ref={chatEndRef} />
+              </div>
+            </ScrollArea>
+          </CardContent>
+
+          <CardFooter className="p-4 border-t border-border">
+            {suggestionVisible && (
+              <div className="w-full mb-4 flex flex-wrap gap-2">
+                {suggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    className="bg-tattva-primary/10 hover:bg-tattva-primary/20 text-sm px-3 py-1.5 rounded-full text-foreground transition-colors"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="w-full flex items-center gap-2">
+              <Input
+                placeholder="Ask me about India's cultural heritage..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyPress}
+                className="flex-1"
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className={`rounded-full ${isRecording ? "bg-red-500 text-white" : ""}`}
+                onClick={handleVoiceToggle}
+              >
+                {isRecording ? <CircleStop size={18} /> : <Mic size={18} />}
+              </Button>
+              <Button
+                size="icon"
+                className="rounded-full bg-tattva-primary hover:bg-tattva-primary/90"
+                onClick={handleSendMessage}
+              >
+                <Send size={18} />
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+
+        {/* Information sidebar */}
+        <Card className="border-border shadow-lg bg-card/50 backdrop-blur-sm">
+          <CardHeader className="border-b border-border">
+            <CardTitle>About AhamAI</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2 font-rajdhani">What is AhamAI?</h3>
+                <p className="text-sm text-muted-foreground">
+                  AhamAI is your intelligent guide to India's rich cultural heritage. The name 'Aham' comes from Sanskrit, meaning 'I' or 'self', reflecting the personal connection to culture.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold mb-2 font-rajdhani">How can AhamAI help?</h3>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li className="flex items-start">
+                    <span className="text-tattva-primary mr-2">•</span>
+                    <span>Learn about various Indian art forms</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-tattva-primary mr-2">•</span>
+                    <span>Discover cultural festivals and celebrations</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-tattva-primary mr-2">•</span>
+                    <span>Explore historical sites and their significance</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-tattva-primary mr-2">•</span>
+                    <span>Get personalized cultural travel recommendations</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div className="p-3 bg-tattva-primary/10 rounded-md border border-tattva-primary/20">
+                <h3 className="text-sm font-semibold mb-1">Did you know?</h3>
+                <p className="text-xs text-muted-foreground">
+                  India has 40 UNESCO World Heritage Sites, including cultural masterpieces like the Taj Mahal, Ajanta Caves, and the temples of Khajuraho.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </PageLayout>
   );
