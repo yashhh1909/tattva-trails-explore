@@ -4,11 +4,11 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, LogIn, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 const navItems = [
   { name: "Home", path: "/" },
   { name: "Art Explorer", path: "/art-explorer" },
-  { name: "Cultural Map", path: "/cultural-map" },
   { name: "Trends", path: "/trends" },
   { name: "KalaBot", path: "/kalabot" },
   { name: "Timeline", path: "/timeline" },
@@ -30,14 +30,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-tattva-light dark:bg-tattva-dark sticky top-0 z-50 shadow-md">
+    <nav className="bg-background border-b border-border sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-tattva-primary to-tattva-accent flex items-center justify-center text-white font-bold text-xl">
               TT
             </div>
-            <span className="font-rajdhani font-bold text-2xl text-tattva-dark dark:text-tattva-light">
+            <span className="font-rajdhani font-bold text-2xl text-foreground">
               TattvaTrails
             </span>
           </Link>
@@ -52,12 +52,14 @@ const Navbar = () => {
                   "px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   location.pathname === item.path
                     ? "bg-tattva-primary text-white"
-                    : "text-tattva-dark dark:text-tattva-light hover:bg-tattva-primary/10"
+                    : "text-foreground hover:bg-tattva-primary/10"
                 )}
               >
                 {item.name}
               </Link>
             ))}
+            
+            <ThemeToggle />
             
             {/* Login Button */}
             <Button 
@@ -81,6 +83,8 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            
             <Button
               variant="ghost"
               size="icon"
@@ -88,9 +92,9 @@ const Navbar = () => {
               className="mr-2"
             >
               {isLoggedIn ? (
-                <UserRound className="h-5 w-5 text-tattva-dark dark:text-tattva-light" />
+                <UserRound className="h-5 w-5" />
               ) : (
-                <LogIn className="h-5 w-5 text-tattva-dark dark:text-tattva-light" />
+                <LogIn className="h-5 w-5" />
               )}
             </Button>
             
@@ -101,9 +105,9 @@ const Navbar = () => {
               aria-label="Menu"
             >
               {isOpen ? (
-                <X className="h-6 w-6 text-tattva-dark dark:text-tattva-light" />
+                <X className="h-6 w-6" />
               ) : (
-                <Menu className="h-6 w-6 text-tattva-dark dark:text-tattva-light" />
+                <Menu className="h-6 w-6" />
               )}
             </Button>
           </div>
@@ -120,7 +124,7 @@ const Navbar = () => {
                   "block px-3 py-2 rounded-md text-base font-medium",
                   location.pathname === item.path
                     ? "bg-tattva-primary text-white"
-                    : "text-tattva-dark dark:text-tattva-light hover:bg-tattva-primary/10"
+                    : "text-foreground hover:bg-tattva-primary/10"
                 )}
                 onClick={() => setIsOpen(false)}
               >

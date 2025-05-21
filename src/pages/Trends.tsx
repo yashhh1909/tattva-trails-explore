@@ -1,13 +1,14 @@
 
 import React, { useState } from "react";
-import { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import PageLayout from "@/components/layout/PageLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { tourismStats, getYearlyData } from "@/data/tourismStats";
 import { culturalHotspots } from "@/data/culturalHotspots";
-import { ArrowUpRight, TrendingUp, TrendingDown, Users, MapPin, DollarSign } from "lucide-react";
+import { ArrowUpRight, TrendingUp, TrendingDown, Users, MapPin, DollarSign, Plus } from "lucide-react";
 
 const Trends = () => {
   const [selectedState, setSelectedState] = useState<string>("All States");
@@ -27,6 +28,7 @@ const Trends = () => {
   const totalVisitors = filteredMonthlyData.reduce((sum, stat) => sum + stat.visitors, 0);
   const averageCulturalTourists = filteredMonthlyData.reduce((sum, stat) => sum + stat.culturalTourists, 0) / filteredMonthlyData.length;
   const totalRevenue = filteredMonthlyData.reduce((sum, stat) => sum + stat.revenue, 0);
+  const growthRate = 12.5; // Sample growth rate
   
   // Get undervisited locations
   const undervisitedHotspots = culturalHotspots
@@ -63,33 +65,61 @@ const Trends = () => {
 
   const seasonalData = prepareSeasionalData();
 
+  // Prepare pie chart data
+  const visitorTypesData = [
+    { name: "Cultural Tourism", value: averageCulturalTourists },
+    { name: "Adventure Tourism", value: 25 },
+    { name: "Beach Tourism", value: 20 },
+    { name: "Wildlife Tourism", value: 15 },
+    { name: "Religious Tourism", value: 30 },
+  ];
+  
+  const VISITOR_COLORS = ["#E46F44", "#F7D36F", "#297F87", "#594236", "#F8F4E3"];
+
   return (
     <PageLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 font-rajdhani">Tourism Trends Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-300">
-          Analyze visitor data, identify patterns, and discover under-visited cultural gems
+        <h1 className="text-3xl font-bold mb-2 font-rajdhani">Tourism Insights Dashboard</h1>
+        <p className="text-muted-foreground">
+          Analyze visitor data, identify patterns, and discover cultural tourism trends
         </p>
       </div>
 
-      {/* State Selector */}
-      <div className="mb-8">
-        <label className="block text-sm font-medium mb-2">Select State:</label>
-        <Select value={selectedState} onValueChange={setSelectedState}>
-          <SelectTrigger className="w-full md:w-64">
-            <SelectValue placeholder="All States" />
-          </SelectTrigger>
-          <SelectContent>
-            {states.map(state => (
-              <SelectItem key={state} value={state}>{state}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* State Selector with Badges */}
+      <div className="mb-8 flex flex-wrap items-center gap-4">
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Region:</label>
+          <Select value={selectedState} onValueChange={setSelectedState}>
+            <SelectTrigger className="w-full md:w-64 border-border bg-card">
+              <SelectValue placeholder="All States" />
+            </SelectTrigger>
+            <SelectContent>
+              {states.map(state => (
+                <SelectItem key={state} value={state}>{state}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="hidden md:flex flex-wrap gap-2 items-center">
+          <Badge variant="outline" className="bg-tattva-primary/10 hover:bg-tattva-primary/20 cursor-pointer" onClick={() => setSelectedState("Rajasthan")}>
+            Rajasthan
+          </Badge>
+          <Badge variant="outline" className="bg-tattva-accent/10 hover:bg-tattva-accent/20 cursor-pointer" onClick={() => setSelectedState("Kerala")}>
+            Kerala
+          </Badge>
+          <Badge variant="outline" className="bg-tattva-secondary/10 hover:bg-tattva-secondary/20 cursor-pointer" onClick={() => setSelectedState("Tamil Nadu")}>
+            Tamil Nadu
+          </Badge>
+          <Badge variant="outline" className="bg-primary/10 hover:bg-primary/20 cursor-pointer" onClick={() => setSelectedState("All States")}>
+            Reset
+          </Badge>
+        </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Card className="border-border bg-card/50 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Total Visitors</CardTitle>
           </CardHeader>
@@ -110,7 +140,7 @@ const Trends = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border bg-card/50 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Cultural Tourism %</CardTitle>
           </CardHeader>
@@ -131,7 +161,7 @@ const Trends = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-border bg-card/50 backdrop-blur-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">Total Revenue</CardTitle>
           </CardHeader>
@@ -151,37 +181,70 @@ const Trends = () => {
             </div>
           </CardContent>
         </Card>
+
+        <Card className="border-border bg-card/50 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-muted-foreground">Annual Growth</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-tattva-primary">
+                  +{growthRate}%
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  year-over-year increase
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-full bg-tattva-primary/10 flex items-center justify-center">
+                <TrendingUp className="h-6 w-6 text-tattva-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Tabs defaultValue="seasonal" className="w-full">
-        <TabsList className="w-full mb-6 sm:w-auto">
+        <TabsList className="w-full mb-6 sm:w-auto bg-muted/50">
           <TabsTrigger value="seasonal">Seasonal Trends</TabsTrigger>
           <TabsTrigger value="comparative">State Comparison</TabsTrigger>
-          <TabsTrigger value="hidden">Under-visited Gems</TabsTrigger>
+          <TabsTrigger value="visitors">Visitor Types</TabsTrigger>
+          <TabsTrigger value="hidden">Hidden Gems</TabsTrigger>
         </TabsList>
 
         {/* Seasonal Trends Tab */}
         <TabsContent value="seasonal">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
+            <Card className="border-border bg-card/70 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-lg font-rajdhani">Monthly Visitor Distribution</CardTitle>
+                <CardTitle className="text-lg font-rajdhani flex items-center">
+                  <span>Monthly Visitor Distribution</span>
+                  <Badge variant="outline" className="ml-2 bg-tattva-primary/10">2025</Badge>
+                </CardTitle>
+                <CardDescription>Tourism fluctuations across different months</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={seasonalData}>
+                      <defs>
+                        <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#E46F44" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#E46F44" stopOpacity={0.2}/>
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                       <XAxis dataKey="month" tickFormatter={(value) => value.substring(0, 3)} />
                       <YAxis />
                       <Tooltip 
                         formatter={(value: number) => [value.toLocaleString(), "Visitors"]}
                         labelFormatter={(label) => `Month: ${label}`}
+                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                       />
                       <Legend />
                       <Bar 
                         dataKey="visitors" 
-                        fill="hsl(var(--primary))" 
+                        fill="url(#colorVisitors)" 
                         name="Total Visitors" 
                         radius={[4, 4, 0, 0]}
                       />
@@ -197,28 +260,38 @@ const Trends = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-border bg-card/70 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-rajdhani">Cultural Tourism Percentage</CardTitle>
+                <CardDescription>Interest in cultural experiences throughout the year</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={seasonalData}>
+                      <defs>
+                        <linearGradient id="colorPercentage" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#297F87" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#297F87" stopOpacity={0.2}/>
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                       <XAxis dataKey="month" tickFormatter={(value) => value.substring(0, 3)} />
                       <YAxis domain={[0, 100]} />
                       <Tooltip 
                         formatter={(value: number) => [`${value.toFixed(1)}%`, "Cultural Tourism"]}
                         labelFormatter={(label) => `Month: ${label}`}
+                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                       />
                       <Legend />
                       <Line 
                         type="monotone" 
                         dataKey="culturalPercentage" 
-                        stroke="hsl(var(--accent))" 
-                        name="Cultural Tourism %" 
+                        stroke="#297F87" 
                         strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#colorPercentage)"
+                        name="Cultural Tourism %" 
                         dot={{ r: 4 }}
                         activeDot={{ r: 6 }}
                       />
@@ -236,9 +309,10 @@ const Trends = () => {
         {/* Comparative Analysis Tab */}
         <TabsContent value="comparative">
           <div className="grid grid-cols-1 gap-6">
-            <Card>
+            <Card className="border-border bg-card/70 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-rajdhani">Tourism Comparison by State</CardTitle>
+                <CardDescription>Total visitor distribution across different states</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-96">
@@ -248,6 +322,12 @@ const Trends = () => {
                       layout="vertical"
                       margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
                     >
+                      <defs>
+                        <linearGradient id="colorStates" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="5%" stopColor="#E46F44" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#F7D36F" stopOpacity={0.8}/>
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" opacity={0.3} horizontal={true} vertical={false} />
                       <XAxis type="number" />
                       <YAxis 
@@ -256,11 +336,14 @@ const Trends = () => {
                         axisLine={false}
                         tickLine={false}
                       />
-                      <Tooltip formatter={(value: number) => [value.toLocaleString(), "Visitors"]} />
+                      <Tooltip 
+                        formatter={(value: number) => [value.toLocaleString(), "Visitors"]} 
+                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
+                      />
                       <Legend />
                       <Bar 
                         dataKey="visitors" 
-                        fill="hsl(var(--primary))" 
+                        fill="url(#colorStates)" 
                         name="Total Visitors" 
                         radius={[0, 4, 4, 0]}
                       />
@@ -273,25 +356,35 @@ const Trends = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-border bg-card/70 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-rajdhani">Cultural Tourism Percentage by State</CardTitle>
+                <CardDescription>Distribution of cultural interest across states</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={yearlyData}>
+                      <defs>
+                        <linearGradient id="colorArea" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#297F87" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#297F87" stopOpacity={0.1}/>
+                        </linearGradient>
+                      </defs>
                       <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                       <XAxis dataKey="state" />
                       <YAxis domain={[0, 100]} />
-                      <Tooltip formatter={(value: number) => [`${value.toFixed(1)}%`, "Cultural Tourism %"]} />
+                      <Tooltip 
+                        formatter={(value: number) => [`${value.toFixed(1)}%`, "Cultural Tourism %"]}
+                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
+                      />
                       <Legend />
                       <Area 
                         type="monotone" 
                         dataKey="culturalTourists" 
-                        fill="hsl(var(--accent))" 
-                        stroke="hsl(var(--accent))" 
-                        fillOpacity={0.3}
+                        fill="url(#colorArea)" 
+                        stroke="#297F87" 
+                        fillOpacity={1}
                         name="Cultural Tourism %"
                       />
                     </AreaChart>
@@ -305,16 +398,128 @@ const Trends = () => {
           </div>
         </TabsContent>
 
+        {/* Visitor Types Tab */}
+        <TabsContent value="visitors">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-border bg-card/70 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-lg font-rajdhani">Tourism Categories</CardTitle>
+                <CardDescription>Breakdown of visitor interests and focus areas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80 flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={visitorTypesData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {visitorTypesData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={VISITOR_COLORS[index % VISITOR_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value: number) => [`${value.toFixed(1)}%`, "Percentage"]}
+                        contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
+                      />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <p className="text-sm text-muted-foreground mt-4">
+                  Cultural and religious tourism represent the largest segments of India's tourism industry.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card/70 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-lg font-rajdhani">Cultural Visitor Growth</CardTitle>
+                <CardDescription>Year-over-year increase in cultural tourism</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm">International Visitors</span>
+                      <Badge variant="outline" className="bg-tattva-primary/10">+18.4%</Badge>
+                    </div>
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-tattva-primary to-tattva-secondary" style={{ width: "18.4%" }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm">Domestic Cultural Tourists</span>
+                      <Badge variant="outline" className="bg-tattva-primary/10">+24.7%</Badge>
+                    </div>
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-tattva-primary to-tattva-secondary" style={{ width: "24.7%" }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm">Festival Attendance</span>
+                      <Badge variant="outline" className="bg-tattva-primary/10">+31.2%</Badge>
+                    </div>
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-tattva-primary to-tattva-secondary" style={{ width: "31.2%" }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm">Heritage Site Visitors</span>
+                      <Badge variant="outline" className="bg-tattva-primary/10">+15.8%</Badge>
+                    </div>
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-tattva-primary to-tattva-secondary" style={{ width: "15.8%" }}></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm">Handicraft Workshops</span>
+                      <Badge variant="outline" className="bg-tattva-primary/10">+22.3%</Badge>
+                    </div>
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-tattva-primary to-tattva-secondary" style={{ width: "22.3%" }}></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 rounded-md bg-muted/40 border border-border">
+                  <h4 className="text-sm font-medium mb-2">Key Insights</h4>
+                  <ul className="list-disc pl-5 space-y-1 text-xs text-muted-foreground">
+                    <li>Festival tourism shows the strongest growth post-pandemic</li>
+                    <li>Domestic cultural tourism growing faster than international</li>
+                    <li>Interactive experiences like workshops gaining popularity</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
         {/* Under-visited Gems Tab */}
         <TabsContent value="hidden">
-          <Card>
+          <Card className="border-border bg-card/70 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-lg font-rajdhani">Under-visited Cultural Gems</CardTitle>
+              <CardDescription>Hidden treasures with untapped tourism potential</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {undervisitedHotspots.map((hotspot) => (
-                  <Card key={hotspot.id} className="border-l-4 border-l-accent">
+                  <Card key={hotspot.id} className="border-l-4 border-l-accent bg-card/50 backdrop-blur-sm">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-medium font-rajdhani">{hotspot.name}</h3>
@@ -328,28 +533,47 @@ const Trends = () => {
                         <MapPin className="h-3 w-3 mr-1" /> {hotspot.state}
                       </div>
                       
-                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-2">
+                      <p className="text-sm text-muted-foreground line-clamp-3 mb-2">
                         {hotspot.description}
                       </p>
                       
-                      <div className="text-xs text-muted-foreground mt-2">
-                        <span className="font-medium">Key art forms:</span>{" "}
-                        {hotspot.artForms.slice(0, 3).join(", ")}
-                        {hotspot.artForms.length > 3 && "..."}
+                      <div className="text-xs text-muted-foreground mt-2 flex flex-wrap gap-1">
+                        <span className="font-medium">Art forms: </span>
+                        {hotspot.artForms.slice(0, 2).map((art, index) => (
+                          <Badge key={index} variant="outline" className="bg-accent/10 text-[10px]">
+                            {art}
+                          </Badge>
+                        ))}
+                        {hotspot.artForms.length > 2 && (
+                          <Badge variant="outline" className="bg-muted/30 text-[10px]">
+                            <Plus className="h-2 w-2 mr-1" /> {hotspot.artForms.length - 2} more
+                          </Badge>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
               
-              <div className="mt-6 bg-accent/10 p-4 rounded-lg">
+              <div className="mt-6 p-4 rounded-lg border border-border bg-muted/30">
                 <h3 className="text-base font-medium mb-2 font-rajdhani">Why Promote Under-visited Destinations?</h3>
-                <ul className="list-disc pl-5 space-y-1 text-sm">
-                  <li>Reduces overtourism at popular sites</li>
-                  <li>Provides economic opportunities to local communities</li>
-                  <li>Preserves unique cultural traditions</li>
-                  <li>Offers authentic experiences for travelers</li>
-                  <li>Promotes sustainable tourism development</li>
+                <ul className="grid md:grid-cols-2 gap-x-6 gap-y-1 mt-3">
+                  <li className="flex items-center text-sm">
+                    <div className="h-2 w-2 rounded-full bg-tattva-primary mr-2"></div>
+                    <span>Reduces overtourism at popular sites</span>
+                  </li>
+                  <li className="flex items-center text-sm">
+                    <div className="h-2 w-2 rounded-full bg-tattva-primary mr-2"></div>
+                    <span>Provides economic opportunities to local communities</span>
+                  </li>
+                  <li className="flex items-center text-sm">
+                    <div className="h-2 w-2 rounded-full bg-tattva-primary mr-2"></div>
+                    <span>Preserves unique cultural traditions</span>
+                  </li>
+                  <li className="flex items-center text-sm">
+                    <div className="h-2 w-2 rounded-full bg-tattva-primary mr-2"></div>
+                    <span>Offers authentic experiences for travelers</span>
+                  </li>
                 </ul>
               </div>
             </CardContent>

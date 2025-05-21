@@ -1,10 +1,10 @@
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Palette, BookOpen, Users, Compass } from "lucide-react";
+import { ArrowRight, Palette, BookOpen, Users, Compass } from "lucide-react";
 import PageLayout from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { artForms } from "@/data/artForms";
-import { culturalHotspots } from "@/data/culturalHotspots";
 import { Card, CardContent } from "@/components/ui/card";
 import IndiaMap from "@/components/map/IndiaMap";
 
@@ -28,11 +28,15 @@ const Home = () => {
 
   return (
     <PageLayout fullWidth>
-      {/* Hero Section with parallax effect */}
+      {/* Hero Section with parallax effect and new banner image */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-tattva-dark to-tattva-dark/90">
         <div className="absolute inset-0 z-0">
-          {/* Background pattern */}
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-light.png')] opacity-10"></div>
+          {/* New India skyline image as background */}
+          <div className="absolute inset-0 bg-cover bg-center" 
+               style={{backgroundImage: "url('/lovable-uploads/702c4462-4efb-440c-bd0c-86651973d43f.png')", 
+                      opacity: 0.8}}>
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background"></div>
         </div>
         
         {isLoading ? (
@@ -44,11 +48,11 @@ const Home = () => {
         ) : (
           // Hero content
           <div className="container mx-auto px-4 z-10 text-center">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 font-rajdhani">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 font-rajdhani drop-shadow-lg">
               <span className="text-tattva-primary">Tattva</span>
               <span className="text-tattva-secondary">Trails</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto drop-shadow-md">
               Journey through India's vibrant artistic heritage and cultural landscapes
             </p>
             <div className="animate-float">
@@ -64,38 +68,30 @@ const Home = () => {
       </section>
 
       {/* Map of India Section */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8 font-rajdhani">Explore India's Cultural Map</h2>
-          <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Discover the rich cultural heritage across India's diverse regions. Click on markers to learn about traditional art forms and cultural hotspots.
+          <h2 className="text-3xl font-bold text-center mb-8 font-rajdhani text-foreground">Explore India's Cultural Map</h2>
+          <p className="text-center text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Discover the rich cultural heritage across India's diverse regions. Click on markers to learn about traditional art forms.
           </p>
           <IndiaMap />
-          <div className="mt-6 text-center">
-            <Link to="/cultural-map">
-              <Button variant="outline" className="border-tattva-primary text-tattva-primary hover:bg-tattva-primary hover:text-white">
-                Explore Detailed Cultural Map
-                <MapPin className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-tattva-light dark:bg-gray-900">
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 font-rajdhani">Explore India's Cultural Heritage</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 font-rajdhani text-foreground">Explore India's Cultural Heritage</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Art Explorer Feature */}
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card/50 backdrop-blur-sm">
               <CardContent className="p-6 flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-tattva-primary/10 rounded-full flex items-center justify-center mb-4">
                   <Palette className="h-8 w-8 text-tattva-primary" />
                 </div>
                 <h3 className="text-xl font-bold mb-2 font-rajdhani">Art Explorer</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Discover traditional art forms across regions, styles, and cultural categories.
                 </p>
                 <Link to="/art-explorer" className="text-tattva-primary hover:text-tattva-primary/80 mt-auto flex items-center">
@@ -104,34 +100,34 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            {/* Cultural Map Feature */}
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-tattva-accent/10 rounded-full flex items-center justify-center mb-4">
-                  <MapPin className="h-8 w-8 text-tattva-accent" />
-                </div>
-                <h3 className="text-xl font-bold mb-2 font-rajdhani">Cultural Hotspots</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Explore a map of India's cultural centers and hidden gems worth visiting.
-                </p>
-                <Link to="/cultural-map" className="text-tattva-accent hover:text-tattva-accent/80 mt-auto flex items-center">
-                  View Map <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </CardContent>
-            </Card>
-
             {/* Tourism Trends Feature */}
-            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card/50 backdrop-blur-sm">
               <CardContent className="p-6 flex flex-col items-center text-center">
                 <div className="w-16 h-16 bg-tattva-secondary/20 rounded-full flex items-center justify-center mb-4">
                   <Compass className="h-8 w-8 text-tattva-dark" />
                 </div>
                 <h3 className="text-xl font-bold mb-2 font-rajdhani">Tourism Insights</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                <p className="text-muted-foreground mb-4">
                   Analyze tourism trends and discover under-visited cultural sites.
                 </p>
                 <Link to="/trends" className="text-tattva-dark hover:text-tattva-dark/80 mt-auto flex items-center">
                   View Trends <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* KalaBot Feature */}
+            <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card/50 backdrop-blur-sm">
+              <CardContent className="p-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-tattva-accent/10 rounded-full flex items-center justify-center mb-4">
+                  <BookOpen className="h-8 w-8 text-tattva-accent" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 font-rajdhani">KalaBot Assistant</h3>
+                <p className="text-muted-foreground mb-4">
+                  Your AI guide to exploring India's cultural heritage and planning your journey.
+                </p>
+                <Link to="/kalabot" className="text-tattva-accent hover:text-tattva-accent/80 mt-auto flex items-center">
+                  Chat with KalaBot <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </CardContent>
             </Card>
@@ -140,14 +136,14 @@ const Home = () => {
       </section>
 
       {/* Spotlight Section */}
-      <section className="py-16 bg-tattva-light dark:bg-gray-800">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center font-rajdhani">Cultural Spotlight</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center font-rajdhani text-foreground">Cultural Spotlight</h2>
           
           <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
             {/* States selection */}
             <div className="md:w-1/4">
-              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4">
+              <div className="bg-card rounded-lg shadow-md p-4 border border-border">
                 <h3 className="text-lg font-semibold mb-4 font-rajdhani">Explore by State</h3>
                 <div className="space-y-2">
                   <button 
@@ -176,7 +172,7 @@ const Home = () => {
                   .filter((art) => activeState === "" || art.state === activeState)
                   .slice(0, 6)
                   .map((art) => (
-                    <Card key={art.id} className="art-card border-none shadow-md">
+                    <Card key={art.id} className="art-card border-none shadow-md bg-card/50 backdrop-blur-sm">
                       <CardContent className="p-0">
                         <div className="h-48 bg-gradient-to-br from-tattva-primary/20 to-tattva-accent/20 rounded-t-lg flex items-center justify-center">
                           <span className="text-5xl">{art.name.charAt(0)}</span>
@@ -188,7 +184,7 @@ const Home = () => {
                               {art.category}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{art.state}, {art.region}</p>
+                          <p className="text-sm text-muted-foreground mb-3">{art.state}, {art.region}</p>
                           <Link
                             to={`/art-explorer?id=${art.id}`}
                             className="text-sm text-tattva-accent hover:text-tattva-accent/80 flex items-center"
@@ -230,12 +226,12 @@ const Home = () => {
       </section>
 
       {/* Enhanced KalaBot Teaser */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-8 md:mb-0">
-              <h2 className="text-3xl font-bold mb-4 font-rajdhani">Meet KalaBot</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+              <h2 className="text-3xl font-bold mb-4 font-rajdhani text-foreground">Meet KalaBot</h2>
+              <p className="text-lg text-muted-foreground mb-6">
                 Your AI guide to India's cultural heritage. Ask questions, get personalized recommendations, 
                 and dive deeper into the stories behind traditional art forms. Now enhanced with voice capabilities and regional expertise!
               </p>
@@ -260,10 +256,10 @@ const Home = () => {
                   K
                 </div>
                 {/* Speech bubbles for enhanced visual */}
-                <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-xl px-3 py-2 shadow-md text-sm">
+                <div className="absolute -top-4 -right-4 bg-card/80 backdrop-blur-sm rounded-xl px-3 py-2 shadow-md text-sm border border-border">
                   Ask me about art forms!
                 </div>
-                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-xl px-3 py-2 shadow-md text-sm">
+                <div className="absolute -bottom-4 -left-4 bg-card/80 backdrop-blur-sm rounded-xl px-3 py-2 shadow-md text-sm border border-border">
                   I know 100+ traditions!
                 </div>
               </div>
