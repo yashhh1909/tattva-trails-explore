@@ -122,7 +122,7 @@ const SupportLocal = () => {
                     <SelectValue placeholder="All Art Forms" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Art Forms</SelectItem>
+                    <SelectItem value="all_art_forms">All Art Forms</SelectItem>
                     {artForms.map((artForm) => (
                       <SelectItem key={artForm} value={artForm}>
                         {artForm}
@@ -143,7 +143,7 @@ const SupportLocal = () => {
                     <SelectValue placeholder="All States" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All States</SelectItem>
+                    <SelectItem value="all_states">All States</SelectItem>
                     {states.map((state) => (
                       <SelectItem key={state} value={state}>
                         {state}
