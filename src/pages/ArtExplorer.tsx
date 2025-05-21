@@ -133,7 +133,7 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border-tattva-primary/10 art-card">
       <div
         className="h-40 bg-cover bg-center"
-        style={{ backgroundImage: `url(${art.imageUrl})` }}
+        style={{ backgroundImage: `url(${art.image || '/placeholder.svg'})` }}
       ></div>
       <CardHeader>
         <div className="flex justify-between items-start">
@@ -167,7 +167,7 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
             </div>
             <div>
               <h4 className="text-sm font-medium mb-1">Notable For</h4>
-              <p className="text-xs text-muted-foreground">{art.notableFor}</p>
+              <p className="text-xs text-muted-foreground">{art.description}</p>
             </div>
           </TabsContent>
           <TabsContent value="details" className="mt-2">
@@ -177,7 +177,7 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
                   Techniques
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
-                  {art.techniques || "Information not available"}
+                  {art.description || "Information not available"}
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="materials">
@@ -185,7 +185,7 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
                   Materials
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
-                  {art.materials || "Information not available"}
+                  {art.description || "Information not available"}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -194,7 +194,7 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
       </CardContent>
       <CardFooter className="bg-muted/20 py-2">
         <div className="flex flex-wrap gap-1 w-full">
-          {art.tags.map((tag, i) => (
+          {art.keywords && art.keywords.map((tag, i) => (
             <Badge key={i} variant="outline" className="text-xs">
               {tag}
             </Badge>
