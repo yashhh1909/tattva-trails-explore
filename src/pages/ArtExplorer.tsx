@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import PageLayout from "@/components/layout/PageLayout";
 import { ArtForm, artForms } from "@/data/artForms";
@@ -8,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Search, Filter, MapPin } from "lucide-react";
+import { Search, Filter, MapPin, Play, ExternalLink } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const ArtExplorer = () => {
@@ -131,16 +130,31 @@ const ArtExplorer = () => {
 const ArtCard = ({ art }: { art: ArtForm }) => {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border-tattva-primary/10 art-card">
-      <div
-        className="h-40 bg-cover bg-center"
-        style={{ backgroundImage: `url(${art.image || '/placeholder.svg'})` }}
-      ></div>
+      <div className="relative">
+        <div
+          className="h-48 bg-cover bg-center"
+          style={{ backgroundImage: `url(${art.image})` }}
+        ></div>
+        {art.videoUrl && (
+          <div className="absolute top-2 right-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="bg-black/70 hover:bg-black/90 text-white"
+              onClick={() => window.open(art.videoUrl, '_blank')}
+            >
+              <Play className="h-3 w-3 mr-1" />
+              Video
+            </Button>
+          </div>
+        )}
+      </div>
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
             <CardTitle className="text-xl font-rajdhani">{art.name}</CardTitle>
             <CardDescription className="flex items-center gap-1">
-              <MapPin className="h-3 w-3" /> {art.region}
+              <MapPin className="h-3 w-3" /> {art.state}, {art.region}
             </CardDescription>
           </div>
           <Badge className="bg-tattva-primary/20 text-tattva-primary hover:bg-tattva-primary/30">
@@ -157,6 +171,11 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
             <TabsTrigger value="details" className="flex-1">
               Details
             </TabsTrigger>
+            {art.videoUrl && (
+              <TabsTrigger value="media" className="flex-1">
+                Media
+              </TabsTrigger>
+            )}
           </TabsList>
           <TabsContent value="overview" className="space-y-2 mt-2">
             <p className="text-sm text-muted-foreground">{art.description}</p>
@@ -166,30 +185,59 @@ const ArtCard = ({ art }: { art: ArtForm }) => {
               <p className="text-xs text-muted-foreground">{art.origin}</p>
             </div>
             <div>
-              <h4 className="text-sm font-medium mb-1">Notable For</h4>
-              <p className="text-xs text-muted-foreground">{art.description}</p>
+              <h4 className="text-sm font-medium mb-1">Popularity</h4>
+              <div className="flex items-center gap-1">
+                {[...Array(10)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-2 w-2 rounded-full ${
+                      i < art.popularity ? 'bg-tattva-primary' : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+                <span className="text-xs text-muted-foreground ml-1">
+                  {art.popularity}/10
+                </span>
+              </div>
             </div>
           </TabsContent>
           <TabsContent value="details" className="mt-2">
             <Accordion type="single" collapsible>
               <AccordionItem value="techniques">
                 <AccordionTrigger className="text-sm py-2">
-                  Techniques
+                  Techniques & Materials
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
-                  {art.description || "Information not available"}
+                  {art.description}
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="materials">
+              <AccordionItem value="significance">
                 <AccordionTrigger className="text-sm py-2">
-                  Materials
+                  Cultural Significance
                 </AccordionTrigger>
                 <AccordionContent className="text-xs">
-                  {art.description || "Information not available"}
+                  This art form represents the rich cultural heritage of {art.state} and is an important part of India's artistic legacy.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
           </TabsContent>
+          {art.videoUrl && (
+            <TabsContent value="media" className="mt-2">
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => window.open(art.videoUrl, '_blank')}
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Watch Video Tutorial
+                </Button>
+                <p className="text-xs text-muted-foreground text-center">
+                  Learn more about this art form through video demonstrations
+                </p>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </CardContent>
       <CardFooter className="bg-muted/20 py-2">
