@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Github, Instagram, Facebook, Twitter } from "lucide-react";
+import { Github, Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -18,28 +18,18 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.instagram.com/tourismgoi/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-300 hover:text-tattva-primary transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram size={20} />
               </a>
               <a
-                href="#"
-                className="text-gray-300 hover:text-tattva-primary transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-300 hover:text-tattva-primary transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter size={20} />
-              </a>
-              <a
-                href="#"
+                href="https://github.com/yashhh1909/tattva-trails-explore"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-300 hover:text-tattva-primary transition-colors"
                 aria-label="Github"
               >
@@ -70,11 +60,6 @@ const Footer = () => {
               <li>
                 <Link to="/trends" className="text-gray-300 hover:text-tattva-primary transition-colors">
                   Tourism Trends
-                </Link>
-              </li>
-              <li>
-                <Link to="/support-local" className="text-gray-300 hover:text-tattva-primary transition-colors">
-                  Support Local Artisans
                 </Link>
               </li>
             </ul>

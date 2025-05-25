@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, LogIn, UserRound } from "lucide-react";
@@ -10,9 +9,8 @@ const navItems = [
   { name: "Home", path: "/" },
   { name: "Art Explorer", path: "/art-explorer" },
   { name: "Trends", path: "/trends" },
-  { name: "KalaBot", path: "/kalabot" },
+  { name: "AhamAI", path: "/kalabot" },
   { name: "Timeline", path: "/timeline" },
-  { name: "Support Local", path: "/support-local" },
 ];
 
 const Navbar = () => {

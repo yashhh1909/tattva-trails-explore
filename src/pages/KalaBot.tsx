@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Mic, Bot, CircleStop } from "lucide-react";
+import { Send, Mic, Bot, CircleStop, Sparkles, Heart, Brain } from "lucide-react";
 import { artForms } from "@/data/artForms";
 
 // Sample responses for the AhamAI chatbot
@@ -50,12 +50,14 @@ const KalaBot = () => {
   const [suggestionVisible, setSuggestionVisible] = useState(true);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Suggestions for users
+  // Enhanced suggestions for users
   const suggestions = [
     "Tell me about Madhubani painting",
     "What is the history of Kathakali?",
     "Recommend cultural sites in Rajasthan",
     "How is Pattachitra art created?",
+    "Best time to visit cultural festivals",
+    "Traditional textiles of India",
   ];
 
   // Scroll to bottom of chat when new messages arrive
@@ -179,24 +181,42 @@ const KalaBot = () => {
   return (
     <PageLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 font-rajdhani">AhamAI Cultural Assistant</h1>
-        <p className="text-muted-foreground">
-          Your intelligent guide to India's rich cultural heritage
-        </p>
+        <div className="flex items-center justify-center mb-4">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent flex items-center justify-center text-white mr-4 animate-pulse">
+              <Brain size={24} />
+            </div>
+            <Sparkles className="absolute -top-1 -right-1 h-6 w-6 text-tattva-secondary animate-bounce" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold font-rajdhani bg-gradient-to-r from-tattva-primary to-tattva-accent bg-clip-text text-transparent">
+              AhamAI Cultural Assistant
+            </h1>
+            <p className="text-muted-foreground flex items-center mt-1">
+              <Heart className="h-4 w-4 mr-1 text-red-500" />
+              Your intelligent guide to India's rich cultural heritage
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main chat area */}
-        <Card className="col-span-1 lg:col-span-2 border-border shadow-lg bg-card/50 backdrop-blur-sm">
-          <CardHeader className="border-b border-border">
+        {/* Main chat area - Enhanced design */}
+        <Card className="col-span-1 lg:col-span-2 border-border shadow-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-lg border-tattva-primary/20">
+          <CardHeader className="border-b border-border bg-gradient-to-r from-tattva-primary/10 to-tattva-accent/10">
             <CardTitle className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent flex items-center justify-center text-white mr-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent flex items-center justify-center text-white mr-2 animate-pulse">
                 <Bot size={18} />
               </div>
-              <span>AhamAI Assistant</span>
-              <span className="ml-2 text-xs bg-green-500/20 text-green-500 px-2 py-0.5 rounded-full">
-                Online
+              <span className="bg-gradient-to-r from-tattva-primary to-tattva-accent bg-clip-text text-transparent">
+                AhamAI Assistant
               </span>
+              <div className="ml-auto flex items-center space-x-2">
+                <span className="text-xs bg-green-500/20 text-green-500 px-2 py-0.5 rounded-full border border-green-500/30 animate-pulse">
+                  ● Online
+                </span>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+              </div>
             </CardTitle>
           </CardHeader>
 
@@ -213,13 +233,17 @@ const KalaBot = () => {
                     <div
                       className={`${getMessageClasses(message.sender)} ${
                         message.isTyping ? "typing-animation" : ""
+                      } ${
+                        message.sender === "bot" 
+                          ? "bg-gradient-to-r from-tattva-primary/10 to-tattva-accent/10 border border-tattva-primary/20" 
+                          : ""
                       }`}
                     >
                       {message.isTyping ? (
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
-                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                          <div className="w-2 h-2 bg-tattva-primary rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
+                          <div className="w-2 h-2 bg-tattva-primary rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                          <div className="w-2 h-2 bg-tattva-primary rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
                         </div>
                       ) : (
                         message.text
@@ -232,18 +256,24 @@ const KalaBot = () => {
             </ScrollArea>
           </CardContent>
 
-          <CardFooter className="p-4 border-t border-border">
+          <CardFooter className="p-4 border-t border-border bg-gradient-to-r from-background/50 to-muted/50">
             {suggestionVisible && (
-              <div className="w-full mb-4 flex flex-wrap gap-2">
-                {suggestions.map((suggestion, index) => (
-                  <button
-                    key={index}
-                    className="bg-tattva-primary/10 hover:bg-tattva-primary/20 text-sm px-3 py-1.5 rounded-full text-foreground transition-colors"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </button>
-                ))}
+              <div className="w-full mb-4">
+                <p className="text-sm text-muted-foreground mb-2 flex items-center">
+                  <Sparkles className="h-4 w-4 mr-1" />
+                  Try asking about:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      className="bg-gradient-to-r from-tattva-primary/10 to-tattva-accent/10 hover:from-tattva-primary/20 hover:to-tattva-accent/20 text-sm px-3 py-1.5 rounded-full text-foreground transition-all duration-300 border border-tattva-primary/20 hover:border-tattva-primary/40 transform hover:scale-105"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             <div className="w-full flex items-center gap-2">
@@ -252,19 +282,23 @@ const KalaBot = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="flex-1"
+                className="flex-1 bg-background/50 border-tattva-primary/20 focus:border-tattva-primary"
               />
               <Button
                 size="icon"
                 variant="ghost"
-                className={`rounded-full ${isRecording ? "bg-red-500 text-white" : ""}`}
+                className={`rounded-full transition-all duration-300 ${
+                  isRecording 
+                    ? "bg-red-500 text-white hover:bg-red-600 animate-pulse" 
+                    : "hover:bg-tattva-primary/10"
+                }`}
                 onClick={handleVoiceToggle}
               >
                 {isRecording ? <CircleStop size={18} /> : <Mic size={18} />}
               </Button>
               <Button
                 size="icon"
-                className="rounded-full bg-tattva-primary hover:bg-tattva-primary/90"
+                className="rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent hover:from-tattva-primary/90 hover:to-tattva-accent/90 transform hover:scale-110 transition-all duration-300"
                 onClick={handleSendMessage}
               >
                 <Send size={18} />
@@ -273,47 +307,75 @@ const KalaBot = () => {
           </CardFooter>
         </Card>
 
-        {/* Information sidebar */}
-        <Card className="border-border shadow-lg bg-card/50 backdrop-blur-sm">
-          <CardHeader className="border-b border-border">
-            <CardTitle>About AhamAI</CardTitle>
+        {/* Enhanced Information sidebar */}
+        <Card className="border-border shadow-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-lg border-tattva-accent/20">
+          <CardHeader className="border-b border-border bg-gradient-to-r from-tattva-accent/10 to-tattva-secondary/10">
+            <CardTitle className="flex items-center">
+              <Brain className="h-5 w-5 mr-2 text-tattva-accent" />
+              About AhamAI
+            </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
             <div className="space-y-4">
+              <div className="text-center">
+                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-tattva-primary to-tattva-accent flex items-center justify-center text-white text-2xl font-bold mb-3 animate-pulse">
+                  A
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Powered by advanced AI • Cultural expertise • Real-time assistance
+                </div>
+              </div>
+              
               <div>
-                <h3 className="text-lg font-semibold mb-2 font-rajdhani">What is AhamAI?</h3>
+                <h3 className="text-lg font-semibold mb-2 font-rajdhani flex items-center">
+                  <Sparkles className="h-4 w-4 mr-1 text-tattva-primary" />
+                  What is AhamAI?
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   AhamAI is your intelligent guide to India's rich cultural heritage. The name 'Aham' comes from Sanskrit, meaning 'I' or 'self', reflecting the personal connection to culture.
                 </p>
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold mb-2 font-rajdhani">How can AhamAI help?</h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li className="flex items-start">
-                    <span className="text-tattva-primary mr-2">•</span>
+                <h3 className="text-lg font-semibold mb-2 font-rajdhani flex items-center">
+                  <Heart className="h-4 w-4 mr-1 text-red-500" />
+                  How can AhamAI help?
+                </h3>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li className="flex items-start p-2 rounded-lg bg-tattva-primary/5">
+                    <span className="text-tattva-primary mr-2">🎨</span>
                     <span>Learn about various Indian art forms</span>
                   </li>
-                  <li className="flex items-start">
-                    <span className="text-tattva-primary mr-2">•</span>
+                  <li className="flex items-start p-2 rounded-lg bg-tattva-accent/5">
+                    <span className="text-tattva-accent mr-2">🎭</span>
                     <span>Discover cultural festivals and celebrations</span>
                   </li>
-                  <li className="flex items-start">
-                    <span className="text-tattva-primary mr-2">•</span>
+                  <li className="flex items-start p-2 rounded-lg bg-tattva-secondary/5">
+                    <span className="text-tattva-dark mr-2">🏛️</span>
                     <span>Explore historical sites and their significance</span>
                   </li>
-                  <li className="flex items-start">
-                    <span className="text-tattva-primary mr-2">•</span>
+                  <li className="flex items-start p-2 rounded-lg bg-green-500/5">
+                    <span className="text-green-500 mr-2">✈️</span>
                     <span>Get personalized cultural travel recommendations</span>
                   </li>
                 </ul>
               </div>
               
-              <div className="p-3 bg-tattva-primary/10 rounded-md border border-tattva-primary/20">
-                <h3 className="text-sm font-semibold mb-1">Did you know?</h3>
+              <div className="p-4 bg-gradient-to-r from-tattva-primary/10 to-tattva-accent/10 rounded-lg border border-tattva-primary/20">
+                <h3 className="text-sm font-semibold mb-2 flex items-center">
+                  <Brain className="h-4 w-4 mr-1" />
+                  Did you know?
+                </h3>
                 <p className="text-xs text-muted-foreground">
                   India has 40 UNESCO World Heritage Sites, including cultural masterpieces like the Taj Mahal, Ajanta Caves, and the temples of Khajuraho.
                 </p>
+              </div>
+
+              <div className="text-center">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-500/20 to-blue-500/20 text-xs border border-green-500/30">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  AI is learning and improving
+                </div>
               </div>
             </div>
           </CardContent>

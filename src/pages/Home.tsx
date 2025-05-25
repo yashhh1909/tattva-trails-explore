@@ -67,16 +67,19 @@ const Home = () => {
         )}
       </section>
 
-      {/* Interactive 3D Map of India Section */}
-      <section className="py-16 bg-background">
+      {/* Interactive 3D Map of India Section - Enhanced styling */}
+      <section className="py-16 bg-gradient-to-br from-background via-muted/30 to-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8 font-rajdhani text-foreground">Explore India's Cultural Landscape</h2>
           <p className="text-center text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Discover the rich cultural heritage across India's diverse regions with our interactive 3D map.
             Hover and click to explore cultural hotspots.
           </p>
-          <div className="transform transition-all duration-700 hover:scale-[1.02] ease-out">
-            <IndiaMap />
+          <div className="relative bg-gradient-to-br from-tattva-primary/5 to-tattva-accent/5 rounded-2xl p-8 shadow-2xl border border-tattva-primary/10">
+            <div className="transform transition-all duration-700 hover:scale-[1.02] ease-out">
+              <IndiaMap />
+            </div>
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-background/20 via-transparent to-transparent rounded-2xl"></div>
           </div>
         </div>
       </section>
@@ -138,7 +141,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Spotlight Section with enhanced 3D art cards */}
+      {/* Spotlight Section with actual art form images */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center font-rajdhani text-foreground">Cultural Spotlight</h2>
@@ -168,25 +171,30 @@ const Home = () => {
               </div>
             </div>
             
-            {/* Art forms display with enhanced 3D effect */}
+            {/* Art forms display with actual images */}
             <div className="md:w-3/4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {artForms
                   .filter((art) => activeState === "" || art.state === activeState)
                   .slice(0, 6)
                   .map((art) => (
-                    <Card key={art.id} className="art-card border-none shadow-md bg-card/50 backdrop-blur-sm transform transition-all duration-300 hover:translate-y-[-6px] hover:rotate-1 hover:shadow-lg">
+                    <Card key={art.id} className="art-card border-none shadow-md bg-card/50 backdrop-blur-sm transform transition-all duration-300 hover:translate-y-[-6px] hover:rotate-1 hover:shadow-lg overflow-hidden">
                       <CardContent className="p-0">
-                        <div className="h-48 bg-gradient-to-br from-tattva-primary/20 to-tattva-accent/20 rounded-t-lg flex items-center justify-center relative overflow-hidden">
-                          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-                          <span className="text-5xl relative z-10">{art.name.charAt(0)}</span>
+                        <div className="h-48 relative overflow-hidden rounded-t-lg">
+                          <div
+                            className="absolute inset-0 bg-cover bg-center transform transition-transform duration-300 hover:scale-110"
+                            style={{ backgroundImage: `url(${art.image})` }}
+                          ></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                          <div className="absolute bottom-2 left-2 text-white">
+                            <span className="text-xs px-2 py-1 rounded-full bg-tattva-secondary/80 text-tattva-dark font-medium">
+                              {art.category}
+                            </span>
+                          </div>
                         </div>
                         <div className="p-4 relative z-10">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="text-lg font-semibold font-rajdhani">{art.name}</h4>
-                            <span className="text-xs px-2 py-1 rounded-full bg-tattva-secondary/20 text-tattva-dark">
-                              {art.category}
-                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground mb-3">{art.state}, {art.region}</p>
                           <Link
