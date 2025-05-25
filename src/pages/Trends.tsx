@@ -58,7 +58,7 @@ const Trends = () => {
 
   return (
     <PageLayout>
-      <>
+      <div className="space-y-12">
         {/* Vintage Newspaper-style Header */}
         <div className="mb-12 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border-4 border-amber-200 dark:border-amber-800"></div>
@@ -251,7 +251,7 @@ const Trends = () => {
             "Preserving Heritage, Tracking Progress, Inspiring Discovery"
           </div>
         </div>
-      </>
+      </div>
     </PageLayout>
   );
 };

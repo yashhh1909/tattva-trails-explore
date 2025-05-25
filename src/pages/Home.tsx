@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, Scroll, Calendar } from "lucide-react";
 import PageLayout from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { artForms } from "@/data/artForms";
@@ -28,7 +28,7 @@ const Home = () => {
 
   return (
     <PageLayout fullWidth>
-      {/* Hero Section with enhanced styling */}
+      {/* Hero Section with enhanced typography */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-tattva-dark to-tattva-dark/90">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-cover bg-center" 
@@ -45,19 +45,32 @@ const Home = () => {
           </div>
         ) : (
           <div className="container mx-auto px-4 z-10 text-center">
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-6 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]" 
-                style={{ fontFamily: 'serif' }}>
-              <span className="text-white bg-gradient-to-r from-tattva-primary to-tattva-secondary bg-clip-text text-transparent font-extrabold">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-6 drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)]" 
+                style={{ 
+                  fontFamily: 'Georgia, "Times New Roman", serif',
+                  textShadow: '4px 4px 8px rgba(0,0,0,0.8), 8px 8px 16px rgba(228,111,68,0.3)'
+                }}>
+              <span className="text-white bg-gradient-to-r from-tattva-primary via-yellow-400 to-tattva-secondary bg-clip-text text-transparent font-extrabold relative">
                 Tattva
+                <span className="absolute -top-2 -right-2 text-xs text-tattva-secondary rotate-12 opacity-80">✨</span>
               </span>
-              <span className="text-white font-extrabold">Trails</span>
+              <br />
+              <span className="text-white font-extrabold italic tracking-wider" 
+                    style={{ fontFamily: 'Brush Script MT, cursive' }}>
+                Trails
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto drop-shadow-md font-semibold">
-              Journey through India's vibrant artistic heritage and cultural landscapes
+            <p className="text-xl md:text-3xl text-gray-200 mb-8 max-w-4xl mx-auto drop-shadow-lg font-bold tracking-wide"
+               style={{ 
+                 fontFamily: 'Georgia, serif',
+                 textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
+               }}>
+              Journey through India's <span className="text-tattva-secondary italic">vibrant</span> artistic heritage 
+              <br />and <span className="text-tattva-primary italic">cultural landscapes</span>
             </p>
             <div className="animate-float">
               <Link to="/art-explorer">
-                <Button size="lg" className="bg-tattva-primary hover:bg-tattva-primary/90 text-white text-lg px-8 py-4">
+                <Button size="lg" className="bg-tattva-primary hover:bg-tattva-primary/90 text-white text-lg px-8 py-4 shadow-2xl border-2 border-tattva-secondary/30 hover:border-tattva-secondary">
                   Begin Your Cultural Journey
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -158,6 +171,106 @@ const Home = () => {
                   </Button>
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Old Newspaper Style Timeline Teaser */}
+      <section className="py-20 bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 dark:from-amber-900/30 dark:via-orange-900/20 dark:to-amber-900/30 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23000\" fill-opacity=\"0.1\"%3E%3Cpath d=\"M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative">
+          {/* Newspaper Header */}
+          <div className="text-center mb-12 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-800/20 dark:to-orange-800/20 rounded-2xl border-4 border-amber-300 dark:border-amber-700 shadow-2xl"></div>
+            <div className="relative p-8">
+              <div className="flex items-center justify-center mb-4">
+                <Scroll className="h-8 w-8 text-amber-700 mr-3" />
+                <div className="text-xs font-bold text-amber-700 tracking-widest font-serif">EST. 3000 BCE • HERITAGE EDITION</div>
+                <Clock className="h-8 w-8 text-amber-700 ml-3" />
+              </div>
+              <h2 className="text-5xl md:text-6xl font-black mb-2 font-serif text-amber-900 dark:text-amber-100 leading-tight tracking-tight">
+                THE HERITAGE CHRONICLE
+              </h2>
+              <div className="w-full h-1 bg-amber-700 mb-4"></div>
+              <p className="text-2xl font-bold text-amber-800 dark:text-amber-200 mb-2 font-serif italic">
+                A Journey Through Time & Tradition
+              </p>
+              <p className="text-lg text-amber-700 dark:text-amber-300 max-w-4xl mx-auto font-medium">
+                Explore the chronological evolution of India's artistic heritage, from ancient civilizations to modern renaissance
+              </p>
+              <div className="mt-6 flex items-center justify-center space-x-8 text-sm text-amber-600 dark:text-amber-400 font-serif">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <span>3000 BCE - Present</span>
+                </div>
+                <div className="flex items-center">
+                  <Scroll className="h-4 w-4 mr-2" />
+                  <span>50+ Cultural Milestones</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Newspaper Columns Layout */}
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-amber-50/80 dark:bg-amber-900/20 p-6 rounded-lg border-2 border-amber-200 dark:border-amber-700 shadow-lg">
+              <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-3 font-serif border-b-2 border-amber-300 pb-2">
+                ANCIENT CIVILIZATIONS
+              </h3>
+              <p className="text-sm text-amber-700 dark:text-amber-300 leading-relaxed font-serif">
+                From the Indus Valley's sophisticated urban planning to the cave paintings of Ajanta, 
+                witness the birth of artistic expression in the subcontinent.
+              </p>
+              <div className="mt-4 text-xs text-amber-600 dark:text-amber-400 font-serif italic">
+                "The foundations of creativity laid in stone and pigment"
+              </div>
+            </div>
+
+            <div className="bg-amber-50/80 dark:bg-amber-900/20 p-6 rounded-lg border-2 border-amber-200 dark:border-amber-700 shadow-lg">
+              <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-3 font-serif border-b-2 border-amber-300 pb-2">
+                MEDIEVAL RENAISSANCE
+              </h3>
+              <p className="text-sm text-amber-700 dark:text-amber-300 leading-relaxed font-serif">
+                The golden age of temple architecture, classical dance forms, and courtly arts 
+                flourished under various dynasties across the region.
+              </p>
+              <div className="mt-4 text-xs text-amber-600 dark:text-amber-400 font-serif italic">
+                "When kings and artists danced together in harmony"
+              </div>
+            </div>
+
+            <div className="bg-amber-50/80 dark:bg-amber-900/20 p-6 rounded-lg border-2 border-amber-200 dark:border-amber-700 shadow-lg">
+              <h3 className="text-xl font-bold text-amber-900 dark:text-amber-100 mb-3 font-serif border-b-2 border-amber-300 pb-2">
+                MODERN REVIVAL
+              </h3>
+              <p className="text-sm text-amber-700 dark:text-amber-300 leading-relaxed font-serif">
+                Contemporary artists breathing new life into traditional forms, 
+                creating a bridge between ancient wisdom and modern expression.
+              </p>
+              <div className="mt-4 text-xs text-amber-600 dark:text-amber-400 font-serif italic">
+                "Tradition meets innovation in perfect symphony"
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <Link to="/timeline">
+              <Button className="bg-amber-700 hover:bg-amber-800 text-white text-lg px-8 py-4 shadow-xl border-2 border-amber-600 font-serif">
+                Read the Full Chronicle
+                <Scroll className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+
+          {/* Newspaper Footer */}
+          <div className="mt-12 text-center border-t-2 border-amber-300 dark:border-amber-700 pt-6">
+            <div className="text-xs text-amber-600 dark:text-amber-400 font-serif">
+              Published by The Heritage Chronicle Society • Preserving India's Cultural Legacy Since Time Immemorial
             </div>
           </div>
         </div>
