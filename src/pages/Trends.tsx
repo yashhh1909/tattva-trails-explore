@@ -56,6 +56,75 @@ const Trends = () => {
     }
   ];
 
+  const renderChart = () => {
+    switch (selectedChart) {
+      case 'bar':
+        return (
+          <BarChart data={selectedData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#d97706" opacity={0.3} />
+            <XAxis dataKey="state" stroke="#92400e" fontSize={12} />
+            <YAxis stroke="#92400e" fontSize={12} tickFormatter={formatVisitors} />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#fef3c7', 
+                border: '2px solid #d97706',
+                borderRadius: '8px',
+                color: '#92400e'
+              }}
+              formatter={(value: number) => [formatVisitors(value), 'Visitors']}
+            />
+            <Bar dataKey="visitors" fill="#d97706" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        );
+      case 'line':
+        return (
+          <LineChart data={selectedData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#d97706" opacity={0.3} />
+            <XAxis dataKey="state" stroke="#92400e" fontSize={12} />
+            <YAxis stroke="#92400e" fontSize={12} />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#fef3c7', 
+                border: '2px solid #d97706',
+                borderRadius: '8px',
+                color: '#92400e'
+              }}
+            />
+            <Line type="monotone" dataKey="culturalTourists" stroke="#d97706" strokeWidth={3} dot={{ fill: '#d97706', strokeWidth: 2, r: 6 }} />
+          </LineChart>
+        );
+      case 'pie':
+        return (
+          <PieChart>
+            <Pie
+              data={selectedData}
+              cx="50%"
+              cy="50%"
+              outerRadius={120}
+              fill="#d97706"
+              dataKey="visitors"
+              label={({ state, percent }) => `${state} (${(percent * 100).toFixed(0)}%)`}
+            >
+              {selectedData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
+              ))}
+            </Pie>
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#fef3c7', 
+                border: '2px solid #d97706',
+                borderRadius: '8px',
+                color: '#92400e'
+              }}
+              formatter={(value: number) => [formatVisitors(value), 'Visitors']}
+            />
+          </PieChart>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <PageLayout>
       <div className="space-y-12">
@@ -176,67 +245,7 @@ const Trends = () => {
           <CardContent>
             <div className="h-96">
               <ResponsiveContainer width="100%" height="100%">
-                {selectedChart === 'bar' && (
-                  <BarChart data={selectedData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#d97706" opacity={0.3} />
-                    <XAxis dataKey="state" stroke="#92400e" fontSize={12} />
-                    <YAxis stroke="#92400e" fontSize={12} tickFormatter={formatVisitors} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#fef3c7', 
-                        border: '2px solid #d97706',
-                        borderRadius: '8px',
-                        color: '#92400e'
-                      }}
-                      formatter={(value: number) => [formatVisitors(value), 'Visitors']}
-                    />
-                    <Bar dataKey="visitors" fill="#d97706" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                )}
-                
-                {selectedChart === 'line' && (
-                  <LineChart data={selectedData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#d97706" opacity={0.3} />
-                    <XAxis dataKey="state" stroke="#92400e" fontSize={12} />
-                    <YAxis stroke="#92400e" fontSize={12} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#fef3c7', 
-                        border: '2px solid #d97706',
-                        borderRadius: '8px',
-                        color: '#92400e'
-                      }}
-                    />
-                    <Line type="monotone" dataKey="culturalTourists" stroke="#d97706" strokeWidth={3} dot={{ fill: '#d97706', strokeWidth: 2, r: 6 }} />
-                  </LineChart>
-                )}
-                
-                {selectedChart === 'pie' && (
-                  <PieChart>
-                    <Pie
-                      data={selectedData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={120}
-                      fill="#d97706"
-                      dataKey="visitors"
-                      label={({ state, percent }) => `${state} (${(percent * 100).toFixed(0)}%)`}
-                    >
-                      {selectedData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: '#fef3c7', 
-                        border: '2px solid #d97706',
-                        borderRadius: '8px',
-                        color: '#92400e'
-                      }}
-                      formatter={(value: number) => [formatVisitors(value), 'Visitors']}
-                    />
-                  </PieChart>
-                )}
+                {renderChart()}
               </ResponsiveContainer>
             </div>
           </CardContent>
