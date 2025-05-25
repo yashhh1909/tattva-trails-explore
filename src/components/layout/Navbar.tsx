@@ -1,6 +1,7 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, LogIn, UserRound } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -16,15 +17,9 @@ const navItems = [
 const Navbar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleLogin = () => {
-    // This is a placeholder - we'll implement real authentication once connected to Supabase
-    setIsLoggedIn(!isLoggedIn);
   };
 
   return (
@@ -32,9 +27,6 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-tattva-primary to-tattva-accent flex items-center justify-center text-white font-bold text-xl">
-              TT
-            </div>
             <span className="font-rajdhani font-bold text-2xl text-foreground">
               TattvaTrails
             </span>
@@ -58,43 +50,11 @@ const Navbar = () => {
             ))}
             
             <ThemeToggle />
-            
-            {/* Login Button */}
-            <Button 
-              variant="ghost" 
-              onClick={handleLogin}
-              className="flex items-center gap-2"
-            >
-              {isLoggedIn ? (
-                <>
-                  <UserRound className="h-4 w-4" /> 
-                  <span>Profile</span>
-                </>
-              ) : (
-                <>
-                  <LogIn className="h-4 w-4" /> 
-                  <span>Login</span>
-                </>
-              )}
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogin}
-              className="mr-2"
-            >
-              {isLoggedIn ? (
-                <UserRound className="h-5 w-5" />
-              ) : (
-                <LogIn className="h-5 w-5" />
-              )}
-            </Button>
             
             <Button
               variant="ghost"
